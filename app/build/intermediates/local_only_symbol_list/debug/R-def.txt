@@ -1,0 +1,37 @@
+R_DEF: Internal format may change without notice
+local
+color background_dark
+color background_darker
+color border_blue
+color error_red
+color header_orange
+color label_blue
+color success_green
+color white
+drawable ai_badge_background
+drawable field_border
+drawable field_border_error
+drawable ic_arrow_back
+drawable ic_check_circle
+drawable ic_error_circle
+drawable ic_launcher_foreground
+drawable scan_frame
+id btnBack
+id fieldBorder
+id fieldsContainer
+id ivStatusIcon
+id previewView
+id tvCheckDigitStatus
+id tvFieldAI
+id tvFieldError
+id tvFieldLabel
+id tvFieldValue
+id tvScannedContent
+id tvValidationStatus
+layout activity_main
+layout activity_result
+layout item_field
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Theme.GS1Scanner
