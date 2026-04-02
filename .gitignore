@@ -1,23 +1,22 @@
-*.iml
-.gradle
-/local.properties
-/.idea
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-
-# App build outputs
-/app/build
-
-# APK files
+# Build artifacts
+.gradle/
+build/
+**/build/
 *.apk
+*.aar
 
-# Keystore
+# IDE configurations
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sensitive and local configuration
+local.properties
 *.jks
 *.keystore
-
-# Google Services
 google-services.json
+
+# System files
+.DS_Store
+Thumbs.db
