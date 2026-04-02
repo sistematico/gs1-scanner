@@ -27,7 +27,7 @@ class ResultActivity : AppCompatActivity() {
 
         // Scanned content
         val tvScannedContent = findViewById<TextView>(R.id.tvScannedContent)
-        tvScannedContent.text = rawContent.removePrefix("]d2").trimStart('\u001D')
+        tvScannedContent.text = rawContent.removePrefix("]d2").replace(Regex("[\\x00-\\x1F\\x7F]"), "")
         tvScannedContent.setOnLongClickListener {
             copyToClipboard("Código Scanneado", rawContent)
             true
