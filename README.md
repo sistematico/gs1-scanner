@@ -39,20 +39,88 @@ Aplicativo Android para leitura e validação de códigos DataMatrix no padrão 
   - Build Tools 34.0.0
   - Platform Android 34 (API 34)
 
-### Compilar
+### APK de Debug
 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk
 export ANDROID_HOME=/opt/android-sdk
 
-# Debug APK
 ./gradlew assembleDebug
+```
 
-# Release APK (não assinado)
+Saída: `app/build/outputs/apk/debug/app-debug.apk`
+
+O APK de debug já é assinado automaticamente com uma chave de desenvolvimento e pode ser instalado diretamente em dispositivos com depuração USB ativada.
+
+---
+
+### APK de Release
+
+#### 1. Gerar um keystore (apenas na primeira vez)
+
+```bash
+keytool -genkeypair -v \
+  -keystore keystore.jks \
+  -keyalg RSA -keysize 2048 -validity 10000 \
+  -alias minha-chave
+```
+
+Guarde o arquivo `keystore.jks` e as senhas em local seguro. **Não versione o keystore no git.**
+
+#### 2. Configurar as credenciais de assinatura
+
+Crie ou edite o arquivo `local.properties` na raiz do projeto (já ignorado pelo `.gitignore`):
+
+```properties
+KEYSTORE_PATH=/caminho/absoluto/para/keystore.jks
+KEYSTORE_PASSWORD=senha-do-keystore
+KEY_ALIAS=minha-chave
+KEY_PASSWORD=senha-da-chave
+```
+
+#### 3. Configurar a assinatura no `app/build.gradle.kts`
+
+Adicione o bloco `signingConfigs` dentro de `android { }`:
+
+```kotlin
+import java.util.Properties
+
+val localProps = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+
+android {
+    signingConfigs {
+        create("release") {
+            storeFile = file(localProps["KEYSTORE_PATH"] as String)
+            storePassword = localProps["KEYSTORE_PASSWORD"] as String
+            keyAlias = localProps["KEY_ALIAS"] as String
+            keyPassword = localProps["KEY_PASSWORD"] as String
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+}
+```
+
+#### 4. Gerar o APK
+
+```bash
 ./gradlew assembleRelease
 ```
 
-O APK será gerado em `app/build/outputs/apk/debug/app-debug.apk`.
+Saída: `app/build/outputs/apk/release/app-release.apk`
+
+> **Sem keystore configurado**, o comando ainda funciona e gera um APK não assinado em `app/build/outputs/apk/release/app-release-unsigned.apk`, mas ele **não pode ser instalado** em dispositivos sem assinatura manual posterior.
 
 ## Estrutura do Projeto
 
